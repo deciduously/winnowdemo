@@ -1,0 +1,23 @@
+int = @{ digit+ }
+    digit = { '0'..'9' }
+
+int_line = { int ~ newline }
+    newline = { ("\n" | "\r\n") }
+
+string_line = { (letter|punctuation) ~ string ~ newline }
+    letter = { 'a' .. 'z' | 'A' .. 'Z' }
+    punctuation = { " " | "?" | "." | "," | "$" | "-" }
+    string = @{ (letter | digit | punctuation )+}
+
+branching = { branching_id ~ int_line{2} ~ string_line{4} }
+    branching_id = { "2" ~ newline }
+    
+question = { question_id ~ int_line{2} ~ string_line ~ string_line* }
+    question_id = { "1" ~ newline }
+    
+terminating = { terminating_id ~ string_line }
+    terminating_id = { "3" ~ newline }
+
+node = { question | branching | terminating }
+
+nodes = { SOI ~ node* ~ EOI }

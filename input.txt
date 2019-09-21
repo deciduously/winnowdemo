@@ -1,14 +1,27 @@
-1                
-1                
-3                
-NAME                
-What is your name?        
-Please tell me your name    
-You better tell me your name    
-2                
-2                
-3                
-QUEST                
-$NAME, what is your quest?    
-The Holy Grail                
-Run and Hide        
+1
+1
+3
+NAME
+What is your name?
+Please tell me your name
+You had better tell me your name
+2
+2
+3
+QUEST
+$NAME, what is your quest?
+The Holy Grail
+Run and Hide
+2
+4
+5
+COLOR
+$NAME, who seeks $QUEST, what is your favorite color?
+Red
+I mean blue
+3
+Since you have REFUSED to answer, customer service has been called
+3
+You may pass, $NAME who loves $COLOR, on your noble quest for the $QUEST.
+3
+AAAARRRRGGGGGHHHHH

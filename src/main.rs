@@ -1,8 +1,12 @@
-//use lazy_static::lazy_static;
+#[macro_use]
+extern crate pest_derive;
+
+use pest::{iterators::Pair, Parser};
 use std::{
     collections::HashMap,
     fmt,
-    io::{self, BufRead, Write},
+    fs::File,
+    io::{self, BufRead, BufReader, Read, Write},
 };
 
 /// Unique node identifier type
@@ -10,28 +14,28 @@ use std::{
 // e.g. on 64 bit platform this is 8 bytes
 type NodeId = usize;
 
-/// Maximum number of questions to hold
-const MAX_QUESTION_STATES: usize = 3;
-
-/// Array types alias for holding question string literals
-type QuestionList = [&'static str; MAX_QUESTION_STATES];
+/// Array type alias for holding question string literals
+type QuestionList = Vec<String>;
 
 /// Exit condition
 static TERMINATING_NODE: NodeId = 9999;
 
+/// Input file
+static INPUT_FILE: &str = "input.txt";
+
 /// Each possible node variant
-#[derive(Debug, Clone)]
+#[derive(Debug, PartialEq)]
 enum NodeType {
     // Question Text, Option One, Option Two
-    Branching(&'static str, &'static str, &'static str),
+    Branching(String, String, String),
     // List of question states
-    Question([&'static str; MAX_QUESTION_STATES]),
+    Question(QuestionList),
     // Terminating message text
-    Terminating(&'static str),
+    Terminating(String),
 }
 
 /// Node type
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 struct Node {
     /// Unique ID - position in Nodes array
     id: NodeId,
@@ -42,7 +46,7 @@ struct Node {
     /// ID to transition for option 2
     transition_two: Option<NodeId>,
     /// Variable name associated with his node
-    variable: Option<&'static str>,
+    variable: Option<String>,
 }
 
 impl Node {
@@ -52,7 +56,7 @@ impl Node {
         node_type: NodeType,
         transition_one: Option<NodeId>,
         transition_two: Option<NodeId>,
-        variable: Option<&'static str>,
+        variable: Option<String>,
     ) -> Self {
         Self {
             id,
@@ -66,7 +70,7 @@ impl Node {
 
 /// User-defined variables
 // Note, HashMap not necessary if you want to stick to an array, just quick to start with
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 struct Env(HashMap<String, String>);
 
 impl Env {
@@ -123,9 +127,38 @@ impl Default for Env {
     }
 }
 
+#[derive(Parser)]
+#[grammar = "nodes.pest"]
+pub struct NodesParser;
+
+/// helper function to parse string_line rule
+fn parse_string_line(parsed: Pair<Rule>) -> String {
+    match parsed.as_rule() {
+        Rule::string_line => {
+            let ret: String = parsed.as_str().into();
+            ret[..ret.len() - 1].into()
+        }
+        _ => panic!("Called parse_string_line on the wrong rule"),
+    }
+}
+
+/// helper function to parse int_line rule
+fn parse_int_line(parsed: Pair<Rule>) -> usize {
+    match parsed.as_rule() {
+        Rule::int_line => parsed
+            .into_inner()
+            .next()
+            .unwrap()
+            .as_str()
+            .parse::<usize>()
+            .unwrap(),
+        _ => panic!("Called parse_int_line on the wrong rule"),
+    }
+}
+
 /// Containing structure for all nodes
 /// Nodes are registered in sequential order
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq)]
 struct Nodes {
     /// Current node tracker
     current_node: NodeId,
@@ -138,6 +171,22 @@ struct Nodes {
 }
 
 impl Nodes {
+    /// Constructor will parse input.txt file
+    fn new() -> Self {
+        let mut ret = Nodes::default();
+        // read input file
+        let mut file_str = String::new();
+        let f = File::open(INPUT_FILE).expect("Should open input file");
+        let mut bfr = BufReader::new(f);
+        bfr.read_to_string(&mut file_str)
+            .expect("Should read input file");
+        let mut parsed = match NodesParser::parse(Rule::nodes, &file_str) {
+            Ok(parse_tree) => parse_tree,
+            Err(e) => panic!(format!("{}", e)),
+        };
+        ret.read_and_register(parsed.next().unwrap());
+        ret
+    }
     /// Get next NodeId
     fn next_id(&self) -> NodeId {
         self.nodes.len()
@@ -148,16 +197,15 @@ impl Nodes {
         &mut self,
         if_answered: NodeId,
         if_terminate: NodeId,
-        variable_name: &'static str,
+        variable_name: &str,
         questions: QuestionList,
     ) {
-        // Push node
         self.nodes.push(Node::new(
             self.next_id(),
             NodeType::Question(questions),
             Some(if_answered),
             Some(if_terminate),
-            Some(variable_name),
+            Some(variable_name.into()),
         ));
     }
 
@@ -166,31 +214,84 @@ impl Nodes {
         &mut self,
         option_one_dest: NodeId,
         option_two_dest: NodeId,
-        variable_name: &'static str,
-        question: &'static str,
-        option_one: &'static str,
-        option_two: &'static str,
+        variable_name: &str,
+        question: &str,
+        option_one: &str,
+        option_two: &str,
     ) {
-        // Push node
         self.nodes.push(Node::new(
             self.next_id(),
-            NodeType::Branching(question, option_one, option_two),
+            NodeType::Branching(question.into(), option_one.into(), option_two.into()),
             Some(option_one_dest),
             Some(option_two_dest),
-            Some(variable_name),
+            Some(variable_name.into()),
         ));
     }
 
     /// Add a terminating node to the set
-    fn register_terminating_node(&mut self, text: &'static str) {
-        // Just push node, no variable
+    fn register_terminating_node(&mut self, text: &str) {
         self.nodes.push(Node::new(
             self.next_id(),
-            NodeType::Terminating(text),
+            NodeType::Terminating(text.into()),
             None,
             None,
             None,
         ))
+    }
+
+    /// Catch-all to register a parsed node
+    fn read_and_register(&mut self, parsed: Pair<Rule>) {
+        match parsed.as_rule() {
+            Rule::nodes => {
+                for child in parsed.into_inner() {
+                    // each should be an expr, grab the actual node type and register it
+                    self.read_and_register(child);
+                }
+            }
+            Rule::node => self.read_and_register(parsed.into_inner().next().unwrap()),
+            Rule::question => {
+                // skip type
+                let mut inner = parsed.into_inner().skip(1);
+                // transition1
+                let t1 = parse_int_line(inner.next().unwrap());
+                // transition2
+                let t2 = parse_int_line(inner.next().unwrap());
+                // variable name
+                let var_name = parse_string_line(inner.next().unwrap());
+                // zero or more questions on stringlines
+                let mut questions = Vec::new();
+                while let Some(qline) = inner.next() {
+                    questions.push(parse_string_line(qline));
+                }
+                self.register_question_node(t1, t2, &var_name, questions);
+            }
+            Rule::branching => {
+                // skip type
+                let mut inner = parsed.into_inner().skip(1);
+                // transition1
+                let t1 = parse_int_line(inner.next().unwrap());
+                // transition2
+                let t2 = parse_int_line(inner.next().unwrap());
+                // variable name
+                let var_name = parse_string_line(inner.next().unwrap());
+                // question text
+                let question = parse_string_line(inner.next().unwrap());
+                // option 1 text
+                let o1 = parse_string_line(inner.next().unwrap());
+                // option 2 text
+                let o2 = parse_string_line(inner.next().unwrap());
+                self.register_branching_node(t1, t2, &var_name, &question, &o1, &o2);
+            }
+            Rule::terminating => {
+                // skip type
+                let mut inner = parsed.into_inner().skip(1);
+                // Terminate message
+                let message = parse_string_line(inner.next().unwrap());
+                self.register_terminating_node(&message);
+            }
+            Rule::EOI => {}
+            _ => panic!(format!("Cannot handle {:?}", parsed.as_rule())),
+        }
     }
 
     /// Execute machine
@@ -222,7 +323,7 @@ impl Nodes {
                                 // Unwraps are safe - we already know its a Question
                                 // Set value
                                 self.env.set_variable(
-                                    self.nodes[self.current_node].variable.unwrap(),
+                                    &self.nodes[self.current_node].variable.as_ref().unwrap(),
                                     line,
                                 );
                                 self.state_transition(
@@ -237,7 +338,7 @@ impl Nodes {
                         );
                     }
                 }
-                Branching(_, one, _) => {
+                Branching(_, _, _) => {
                     // TODO stand-in!
                     // Display prompt
                     print!("{}", self);
@@ -255,7 +356,7 @@ impl Nodes {
                             // NOTE - assumes Branching type always only sets variable on input 1, to that string, this is definitely a stand-in
                             match line.as_str() {
                                 "1" => {
-                                    self.env.set_variable(self.nodes[self.current_node].variable.unwrap(), String::from(*one));
+                                    self.env.set_variable(&self.nodes[self.current_node].variable.as_ref().unwrap(), "Red".into());
                                     self.state_transition(self.nodes[self.current_node].transition_one.unwrap())},
                                 "2" => self.state_transition(self.nodes[self.current_node].transition_two.unwrap()),
                                 _ => eprintln!("There's only 1 and 2")
@@ -314,53 +415,57 @@ impl fmt::Display for Nodes {
     }
 }
 
-/// Stand-in initializer that registers the examples from the spec
-fn init_example_nodes() -> Nodes {
-    let mut ret = Nodes::default();
-    // Node 0
-    ret.register_question_node(
-        1,
-        3,
-        "NAME",
-        [
-            "What is your name?",
-            "Please tell me your name",
-            "You better tell me your name",
-        ],
-    );
-    // Node 1
-    ret.register_branching_node(
-        2,
-        3,
-        "QUEST",
-        "$NAME, what is your quest?",
-        "The Holy Grail",
-        "Run and Hide",
-    );
-    // Node 2
-    ret.register_branching_node(
-        4,
-        5,
-        "COLOR",
-        "$NAME, who seeks $QUEST, what is your favorite color?",
-        "Red",
-        "I mean blue",
-    );
-    // Node 3
-    ret.register_terminating_node(
-        "Since you have REFUSED to answer, customer service has been called",
-    );
-    // Node 4
-    ret.register_terminating_node(
-        "You may pass, $NAME who loves $COLOR, on your noble quest for the $QUEST.",
-    );
-    // Node 5
-    ret.register_terminating_node("AAAARRRRGGGGGHHHHH");
-    // Return completed node structure
-    ret
+fn main() {
+    let mut nodes = Nodes::new();
+    nodes.run();
 }
 
-fn main() {
-    let mut nodes = init_example_nodes();
-    nodes.run();
+#[cfg(test)]
+mod test {
+    #[test]
+    fn test_parse_input() {
+        use super::Nodes;
+        use pretty_assertions::assert_eq;
+        let mut test = Nodes::default();
+        // Node 0
+        test.register_question_node(
+            1,
+            3,
+            "NAME",
+            vec![
+                "What is your name?".into(),
+                "Please tell me your name".into(),
+                "You better tell me your name".into(),
+            ],
+        );
+        // Node 1
+        test.register_branching_node(
+            2,
+            3,
+            "QUEST",
+            "$NAME, what is your quest?",
+            "The Holy Grail",
+            "Run and Hide",
+        );
+        // Node 2
+        test.register_branching_node(
+            4,
+            5,
+            "COLOR",
+            "$NAME, who seeks $QUEST, what is your favorite color?",
+            "Red",
+            "I mean blue",
+        );
+        // Node 3
+        test.register_terminating_node(
+            "Since you have REFUSED to answer, customer service has been called",
+        );
+        // Node 4
+        test.register_terminating_node(
+            "You may pass, $NAME who loves $COLOR, on your noble quest for the $QUEST.",
+        );
+        // Node 5
+        test.register_terminating_node("AAAARRRRGGGGGHHHHH");
+        assert_eq!(Nodes::new(), test);
+    }
 }
