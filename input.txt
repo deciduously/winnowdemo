@@ -4,7 +4,7 @@
 NAME
 What is your name?
 Please tell me your name
-You had better tell me your name
+You better tell me your name
 2
 2
 3
