@@ -1,0 +1,8 @@
+[package]
+authors = ["deciduously <ben@deciduously.com>"]
+edition = "2018"
+name = "winnowdemo"
+version = "0.1.0"
+
+[dependencies]
+lazy_static = "1.4"
