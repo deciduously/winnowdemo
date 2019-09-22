@@ -256,7 +256,7 @@ impl Nodes {
                 let var_name = parse_string_line(inner.next().unwrap());
                 // zero or more questions on stringlines
                 let mut questions = Vec::new();
-                while let Some(qline) = inner.next() {
+                for qline in inner {
                     questions.push(parse_string_line(qline));
                 }
                 self.register_question_node(t1, t2, &var_name, questions);
