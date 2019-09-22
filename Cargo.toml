@@ -1,8 +1,16 @@
 [package]
-authors = ["deciduously <ben@deciduously.com>"]
+authors = ["Ben Lovy <bendlovy@gmail.com>"]
 edition = "2018"
 name = "winnowdemo"
 version = "0.1.0"
+
+[lib]
+name = "winnow_sm"
+path = "src/lib.rs"
+
+[[bin]]
+name = "winnowdemo"
+path = "src/main.rs"
 
 [dependencies]
 pest = "2.1"
