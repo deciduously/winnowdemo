@@ -124,8 +124,6 @@ impl Env {
             }
         }
         ret
-        // Just pass it through
-        //template.into()
     }
 }
 
