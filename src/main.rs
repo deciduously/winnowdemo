@@ -9,6 +9,18 @@ use std::{
     io::{self, BufRead, BufReader, Read, Write},
 };
 
+/// Trim either \n or \r\n from a String
+fn trim_whitespace(s: &str) -> String {
+    let mut ret = String::new();
+
+    for c in s.chars() {
+        if c != '\r' && c != '\n' {
+            ret.push(c);
+        }
+    }
+    ret
+}
+
 /// Unique node identifier type
 // usize is the platform-dependent pointer-sized unsigned integer type
 // e.g. on 64 bit platform this is 8 bytes
@@ -37,8 +49,6 @@ enum NodeType {
 /// Node type
 #[derive(Debug, PartialEq)]
 struct Node {
-    /// Unique ID - position in Nodes array
-    id: NodeId,
     /// Node variant
     node_type: NodeType,
     /// ID to transition for option 1
@@ -52,14 +62,12 @@ struct Node {
 impl Node {
     /// Construct a fresh node
     fn new(
-        id: NodeId,
         node_type: NodeType,
         transition_one: Option<NodeId>,
         transition_two: Option<NodeId>,
         variable: Option<String>,
     ) -> Self {
         Self {
-            id,
             node_type,
             transition_one,
             transition_two,
@@ -134,10 +142,7 @@ pub struct NodesParser;
 /// helper function to parse string_line rule
 fn parse_string_line(parsed: Pair<Rule>) -> String {
     match parsed.as_rule() {
-        Rule::string_line => {
-            let ret: String = parsed.as_str().into();
-            ret[..ret.len() - 1].into()
-        }
+        Rule::string_line => trim_whitespace(parsed.as_str()),
         _ => panic!("Called parse_string_line on the wrong rule"),
     }
 }
@@ -187,10 +192,6 @@ impl Nodes {
         ret.read_and_register(parsed.next().unwrap());
         ret
     }
-    /// Get next NodeId
-    fn next_id(&self) -> NodeId {
-        self.nodes.len()
-    }
 
     /// Add a question node to the set
     fn register_question_node(
@@ -201,7 +202,6 @@ impl Nodes {
         questions: QuestionList,
     ) {
         self.nodes.push(Node::new(
-            self.next_id(),
             NodeType::Question(questions),
             Some(if_answered),
             Some(if_terminate),
@@ -220,7 +220,6 @@ impl Nodes {
         option_two: &str,
     ) {
         self.nodes.push(Node::new(
-            self.next_id(),
             NodeType::Branching(question.into(), option_one.into(), option_two.into()),
             Some(option_one_dest),
             Some(option_two_dest),
@@ -231,7 +230,6 @@ impl Nodes {
     /// Add a terminating node to the set
     fn register_terminating_node(&mut self, text: &str) {
         self.nodes.push(Node::new(
-            self.next_id(),
             NodeType::Terminating(text.into()),
             None,
             None,
@@ -312,7 +310,7 @@ impl Nodes {
                         let mut line = String::new();
                         stdin.lock().read_line(&mut line).unwrap();
                         // Truncate newline
-                        line = line[..line.len() - 1].into();
+                        line = trim_whitespace(&line);
                         match line.len() {
                             0 => {
                                 // Empty input - just a newline
@@ -338,7 +336,7 @@ impl Nodes {
                         );
                     }
                 }
-                Branching(_, _, _) => {
+                Branching(_, one, _) => {
                     // TODO stand-in!
                     // Display prompt
                     print!("{}", self);
@@ -347,7 +345,7 @@ impl Nodes {
                     let mut line = String::new();
                     stdin.lock().read_line(&mut line).unwrap();
                     // truncate newline
-                    line = line[..line.len() - 1].into();
+                    line = trim_whitespace(&line);
                     match line.len() {
                         0 => {
                             eprintln!("TODO - The graphical option won't allow empty input, so just comply please")
@@ -356,7 +354,7 @@ impl Nodes {
                             // NOTE - assumes Branching type always only sets variable on input 1, to that string, this is definitely a stand-in
                             match line.as_str() {
                                 "1" => {
-                                    self.env.set_variable(&self.nodes[self.current_node].variable.as_ref().unwrap(), "Red".into());
+                                    self.env.set_variable(&self.nodes[self.current_node].variable.as_ref().unwrap(), (*one).clone());
                                     self.state_transition(self.nodes[self.current_node].transition_one.unwrap())},
                                 "2" => self.state_transition(self.nodes[self.current_node].transition_two.unwrap()),
                                 _ => eprintln!("There's only 1 and 2")
