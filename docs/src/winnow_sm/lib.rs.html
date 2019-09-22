@@ -528,6 +528,10 @@
 <span id="528">528</span>
 <span id="529">529</span>
 <span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">//</span>
 <span class="comment">// Name of Module: winnow_sm</span>
@@ -539,12 +543,13 @@
 <span class="comment">//</span>
 
 <span class="doccomment">//! # winnow_sm</span>
-<span class="doccomment">//! This module implements a state machine populated from a text file</span>
+<span class="doccomment">//! This module implements a state machine populated from a text file.</span>
 <span class="doccomment">//! It expects a properly-formatted input file at `&lt;rootdir&gt;/input.txt`.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Input file</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This file contains nodes in one of three types: Question, Branching, or Terminating.</span>
+<span class="doccomment">//! Note - comments here are for demonstration only and are not (yet) supported.</span>
 <span class="doccomment">//! The `Question` type prompts for a string input, and can accept zero or more responses if prompt left blank:</span>
 <span class="doccomment">//! ```txt</span>
 <span class="doccomment">//! 1 // Node type must be 1</span>
@@ -570,6 +575,9 @@
 <span class="doccomment">//! 3 // Node type must be 3</span>
 <span class="doccomment">//! You may pass, $NAME who loves $COLOR, on your noble quest for the $QUEST.  // Exit message</span>
 <span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Nodes are added and assigned IDs in the order they appear in the input, beginning with 0.</span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! The string prompts perform simple variable expansion.</span>
 <span class="doccomment">//! You can refer to any variable previously defined in the file by prefixing it with a `$`, as in the examples.</span>
 <span class="doccomment">//! If a lookup fails, the name of the variable in the template will be used instead, without the leading `$`.</span>

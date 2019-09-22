@@ -8,12 +8,13 @@
 //
 
 //! # winnow_sm
-//! This module implements a state machine populated from a text file
+//! This module implements a state machine populated from a text file.
 //! It expects a properly-formatted input file at `<rootdir>/input.txt`.
 //!
 //! ## Input file
 //!
 //! This file contains nodes in one of three types: Question, Branching, or Terminating.
+//! Note - comments here are for demonstration only and are not (yet) supported.
 //! The `Question` type prompts for a string input, and can accept zero or more responses if prompt left blank:
 //! ```txt
 //! 1 // Node type must be 1
@@ -39,6 +40,9 @@
 //! 3 // Node type must be 3
 //! You may pass, $NAME who loves $COLOR, on your noble quest for the $QUEST.  // Exit message
 //! ```
+//!
+//! Nodes are added and assigned IDs in the order they appear in the input, beginning with 0.
+//!
 //! The string prompts perform simple variable expansion.
 //! You can refer to any variable previously defined in the file by prefixing it with a `$`, as in the examples.
 //! If a lookup fails, the name of the variable in the template will be used instead, without the leading `$`.
