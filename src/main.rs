@@ -1,3 +1,12 @@
+//
+// Name of Module: winnowdemo
+// Description: A demonstration of a state machine for branching text-defined user prompts
+// Author: Ben Lovy
+// Date: 9/21/2019
+// For: SIMC
+// Copyright SIMC or Ben Lovy  - All Rights Reserved.
+//
+
 #[macro_use]
 extern crate pest_derive;
 
