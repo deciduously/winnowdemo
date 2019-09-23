@@ -6,4 +6,5 @@ implementors["winnow_sm"] = [{text:"impl <a class=\"trait\" href=\"https://docs.
             } else {
                 window.pending_implementors = implementors;
             }
-        })()
+        
+})()

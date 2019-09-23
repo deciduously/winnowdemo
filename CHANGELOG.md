@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.2.0
+
+- Add blank output line between each node's console output
+
 ## v1.1.0
 
 - Add intro pre-amble

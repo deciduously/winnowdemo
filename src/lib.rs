@@ -345,6 +345,8 @@ impl Nodes {
                     self.state_transition(TERMINATING_NODE);
                 }
             }
+            // Print padding line
+            println!();
         }
     }
 

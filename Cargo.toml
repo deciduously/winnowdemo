@@ -2,7 +2,7 @@
 authors = ["Briana Brownell", "Ben Lovy", "Dan Lovy"]
 edition = "2018"
 name = "winnowdemo"
-version = "1.1.0"
+version = "1.2.0"
 
 [lib]
 name = "winnow_sm"

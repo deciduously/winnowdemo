@@ -1,6 +1,6 @@
 .PHONY: all clean deploy docs help
 
-VERSION=1.1.0
+VERSION=1.2.0
 
 BUILDDR = build
 PROJECT=$(notdir $(shell pwd))
@@ -33,7 +33,7 @@ deploy: docs
 	mkdir -p $(PKGDIR)
 	cp ./target/release/$(PROJECT) $(PKGDIR)
 	cp $(INPUTFILE) $(PKGDIR)
-	tar -cf - $(PKGDIR) | xz -z - > $(XZTARGET)
+	tar -cf - $(PKGDIR) | xz -9 - > $(XZTARGET)
 
 help:
     @echo "Usage: make {all|clean|deploy|docs|help}" 1>&2 && false
