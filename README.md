@@ -22,6 +22,7 @@ Also available:
 - `cargo test` - run tests.
 - `make docs` - build the documentation and deploy to `docs/`
 - `make deploy` - create a compressed Linux build
+- `release-win.ps1` - create a compressed Windows build
 
 ## Crates
 
