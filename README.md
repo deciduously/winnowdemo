@@ -15,7 +15,13 @@ $ cd winnowdemo
 $ cargo run
 ```
 
-Use `cargo test` to run tests. Use `make docs` to build the documentation and deploy to `docs/`. Use `make deploy`
+Optionally pass a filename to specify the input file: `cargo run -- otherFile.txt` or `winnowdemo.exe otherFile.txt`. If invoked with no arguments, will default to `input.txt`. Any extra trailing args are ignored if present.
+
+Also available:
+
+- `cargo test` - run tests.
+- `make docs` - build the documentation and deploy to `docs/`
+- `make deploy` - create a compressed Linux build
 
 ## Crates
 

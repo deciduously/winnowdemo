@@ -532,6 +532,8 @@
 <span id="532">532</span>
 <span id="533">533</span>
 <span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">//</span>
 <span class="comment">// Name of Module: winnow_sm</span>
@@ -544,11 +546,11 @@
 
 <span class="doccomment">//! # winnow_sm</span>
 <span class="doccomment">//! This module implements a state machine populated from a text file.</span>
-<span class="doccomment">//! It expects a properly-formatted input file at `&lt;rootdir&gt;/input.txt`.</span>
+<span class="doccomment">//! Library consumer can specify input file, or default to `&lt;rootdir&gt;/input.txt`.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Input file</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! This file contains nodes in one of three types: Question, Branching, or Terminating.</span>
+<span class="doccomment">//! This file contains nodes in one of [three types](https://deciduously.github.io/winnowdemo/winnow_sm/enum.NodeType.html): Question, Branching, or Terminating.</span>
 <span class="doccomment">//! Note - comments here are for demonstration only and are not (yet) supported.</span>
 <span class="doccomment">//! The `Question` type prompts for a string input, and can accept zero or more responses if prompt left blank:</span>
 <span class="doccomment">//! ```txt</span>
@@ -617,7 +619,7 @@
 <span class="kw">static</span> <span class="ident">TERMINATING_NODE</span>: <span class="ident">NodeId</span> <span class="op">=</span> <span class="number">9999</span>;
 
 <span class="doccomment">/// Input file</span>
-<span class="kw">static</span> <span class="ident">INPUT_FILE</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;input.txt&quot;</span>;
+<span class="kw">static</span> <span class="ident">DEFAULT_INPUT_FILE</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;input.txt&quot;</span>;
 
 <span class="doccomment">/// Each possible node variant</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
@@ -781,12 +783,14 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Nodes</span> {
-    <span class="doccomment">/// Constructor will parse input.txt file</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="doccomment">/// Constructor will parse specified file or `input.txt` if None</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">specified_input</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">input_file</span> <span class="op">=</span> <span class="ident">specified_input</span>.<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DEFAULT_INPUT_FILE</span>.<span class="ident">into</span>());
+        <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Input file: {}\n&quot;</span>, <span class="ident">input_file</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">Nodes</span>::<span class="ident">default</span>();
         <span class="comment">// read input file</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file_str</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
-        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">File</span>::<span class="ident">open</span>(<span class="ident">INPUT_FILE</span>).<span class="ident">expect</span>(<span class="string">&quot;Should open input file&quot;</span>);
+        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">File</span>::<span class="ident">open</span>(<span class="ident">input_file</span>).<span class="ident">expect</span>(<span class="string">&quot;Should open input file&quot;</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bfr</span> <span class="op">=</span> <span class="ident">BufReader</span>::<span class="ident">new</span>(<span class="ident">f</span>);
         <span class="ident">bfr</span>.<span class="ident">read_to_string</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">file_str</span>)
             .<span class="ident">expect</span>(<span class="string">&quot;Should read input file&quot;</span>);
@@ -1064,7 +1068,7 @@
         );
         <span class="comment">// Node 5</span>
         <span class="ident">test</span>.<span class="ident">register_terminating_node</span>(<span class="string">&quot;AAAARRRRGGGGGHHHHH&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Nodes</span>::<span class="ident">new</span>(), <span class="ident">test</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Nodes</span>::<span class="ident">new</span>(<span class="prelude-val">None</span>), <span class="ident">test</span>);
     }
 }
 </pre></div>

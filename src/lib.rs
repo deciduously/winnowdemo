@@ -9,11 +9,11 @@
 
 //! # winnow_sm
 //! This module implements a state machine populated from a text file.
-//! It expects a properly-formatted input file at `<rootdir>/input.txt`.
+//! Library consumer can specify input file, or default to `<rootdir>/input.txt`.
 //!
 //! ## Input file
 //!
-//! This file contains nodes in one of three types: Question, Branching, or Terminating.
+//! This file contains nodes in one of [three types](https://deciduously.github.io/winnowdemo/winnow_sm/enum.NodeType.html): Question, Branching, or Terminating.
 //! Note - comments here are for demonstration only and are not (yet) supported.
 //! The `Question` type prompts for a string input, and can accept zero or more responses if prompt left blank:
 //! ```txt
@@ -82,7 +82,7 @@ type QuestionList = Vec<String>;
 static TERMINATING_NODE: NodeId = 9999;
 
 /// Input file
-static INPUT_FILE: &str = "input.txt";
+static DEFAULT_INPUT_FILE: &str = "input.txt";
 
 /// Each possible node variant
 #[derive(Debug, PartialEq)]
@@ -246,12 +246,14 @@ pub struct Nodes {
 }
 
 impl Nodes {
-    /// Constructor will parse input.txt file
-    pub fn new() -> Self {
+    /// Constructor will parse specified file or `input.txt` if None
+    pub fn new(specified_input: Option<String>) -> Self {
+        let input_file = specified_input.unwrap_or_else(|| DEFAULT_INPUT_FILE.into());
+        println!("Input file: {}\n", input_file);
         let mut ret = Nodes::default();
         // read input file
         let mut file_str = String::new();
-        let f = File::open(INPUT_FILE).expect("Should open input file");
+        let f = File::open(input_file).expect("Should open input file");
         let mut bfr = BufReader::new(f);
         bfr.read_to_string(&mut file_str)
             .expect("Should read input file");
@@ -529,6 +531,6 @@ mod test {
         );
         // Node 5
         test.register_terminating_node("AAAARRRRGGGGGHHHHH");
-        assert_eq!(Nodes::new(), test);
+        assert_eq!(Nodes::new(None), test);
     }
 }

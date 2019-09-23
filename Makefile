@@ -1,6 +1,6 @@
 .PHONY: all clean deploy docs help
 
-VERSION=0.1.0
+VERSION=1.1.0
 
 BUILDDR = build
 PROJECT=$(notdir $(shell pwd))
@@ -10,10 +10,10 @@ EXEC=$(BUILDTARGET)$(PROJECT)
 LIB=winnow_sm
 INPUTFILE=./input.txt
 RUSTCLEAN=cargo clean
-RUSTDOC=cargo doc --document-private-items
+RUSTDOC=cargo doc --document-private-items --no-deps
 RUST=cargo build --release
-PKGDIR=./deploy
-XZTARGET=$(PKGDIR)/$(PROJECT)_$(VERSION)_linux_x64.tar.xz
+PKGDIR=$(PROJECT)_$(VERSION)_linux_x64
+XZTARGET=$(PKGDIR).tar.xz
 
 all: $(EXEC)
 
@@ -29,6 +29,7 @@ $(EXEC):
 	$(RUST)
 
 deploy: docs
+	rm -rf $(PROJECT)_*
 	mkdir -p $(PKGDIR)
 	cp ./target/release/$(PROJECT) $(PKGDIR)
 	cp $(INPUTFILE) $(PKGDIR)

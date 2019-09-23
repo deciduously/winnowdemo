@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["main",""]]});
+initSidebarItems({"constant":[["AUTHORS",""],["VERSION",""]],"fn":[["format_authors",""],["get_input_file_arg","Return the first command line argument, if present"],["main",""]]});
