@@ -7,12 +7,13 @@ int_line = { int ~ newline }
 string_line = { (letter|punctuation) ~ string ~ newline }
     letter = { 'a' .. 'z' | 'A' .. 'Z' }
     punctuation = { " " | "?" | "." | "," | "$" | "-" }
-    string = @{ (letter | digit | punctuation )+}
+    string = @{ (letter | digit | punctuation )+ }
 
-branching = { branching_id ~ int_line{2} ~ string_line{4} }
+branching = { branching_id ~ string_line{2} ~ branch_option+ }
     branching_id = { "2" ~ newline }
+    branch_option = { string ~ ":" ~ int ~ newline }
     
-question = { question_id ~ int_line{2} ~ string_line ~ string_line* }
+question = { question_id ~ int_line{2} ~ string_line ~ string_line+ }
     question_id = { "1" ~ newline }
     
 terminating = { terminating_id ~ string_line }

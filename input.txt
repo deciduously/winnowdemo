@@ -6,19 +6,16 @@ What is your name?
 Please tell me your name
 You better tell me your name
 2
-2
-3
 QUEST
 $NAME, what is your quest?
-The Holy Grail
-Run and Hide
+The Holy Grail:2
+Some Other Grail:2
+Run and Hide:3
 2
-4
-5
 COLOR
 $NAME, who seeks $QUEST, what is your favorite color?
-Red
-I mean blue
+Red:4
+I mean blue:5
 3
 Since you have REFUSED to answer, customer service has been called
 3

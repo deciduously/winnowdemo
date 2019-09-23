@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.3.0
+
+- Allow variable-sized type 2 Branching nodes
+
 ## v1.2.0
 
 - Add blank output line between each node's console output

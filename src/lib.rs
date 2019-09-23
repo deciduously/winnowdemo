@@ -28,12 +28,10 @@
 //! The `Branching` type gives the user exactly two options, each with a destination if selected:
 //! ```txt
 //! 2 // Node type must be 2
-//! 2 // Node to jump to if Option 1 selected
-//! 3 // Node to jump to if Option 2 selected
 //! QUEST // Name of the variable associated with this node
 //! $NAME, what is your quest? // Question prompt
-//! The Holy Grail // Option One text
-//! Run and Hide // Option Two text
+//! The Holy Grail:2 // Option One text:Option 1 destination
+//! Run and Hide:3 // Option Two text:Option 2 destination
 //! ```
 //! The `Terminating` type simply displays a message and signals execution should end:
 //! ```txt
@@ -75,22 +73,22 @@ fn trim_whitespace(s: &str) -> String {
 // e.g. on 64 bit platform this is 8 bytes
 type NodeId = usize;
 
-/// Array type alias for holding question string literals
-type QuestionList = Vec<String>;
-
 /// Exit condition
 static TERMINATING_NODE: NodeId = 9999;
 
 /// Input file
 static DEFAULT_INPUT_FILE: &str = "input.txt";
 
+/// A single branch option (prompt, destination)
+type BranchOption = (String, NodeId);
+
 /// Each possible node variant
 #[derive(Debug, PartialEq)]
 enum NodeType {
-    // Question Text, Option One, Option Two
-    Branching(String, String, String),
-    // List of question states
-    Question(QuestionList),
+    // Question Text, Options
+    Branching(String, Vec<BranchOption>),
+    // Success destination, fail destination, list of question states
+    Question(NodeId, NodeId, Vec<String>),
     // Terminating message text
     Terminating(String),
 }
@@ -100,26 +98,15 @@ enum NodeType {
 struct Node {
     /// Node variant
     node_type: NodeType,
-    /// ID to transition for option 1
-    transition_one: Option<NodeId>,
-    /// ID to transition for option 2
-    transition_two: Option<NodeId>,
     /// Variable name associated with his node
     variable: Option<String>,
 }
 
 impl Node {
     /// Construct a fresh node
-    fn new(
-        node_type: NodeType,
-        transition_one: Option<NodeId>,
-        transition_two: Option<NodeId>,
-        variable: Option<String>,
-    ) -> Self {
+    fn new(node_type: NodeType, variable: Option<String>) -> Self {
         Self {
             node_type,
-            transition_one,
-            transition_two,
             variable,
         }
     }
@@ -209,6 +196,22 @@ impl Default for Env {
 #[grammar = "nodes.pest"]
 pub struct NodesParser;
 
+/// helper function to parse branch_option rule
+fn parse_branch_option_line(parsed: Pair<Rule>) -> BranchOption {
+    match parsed.as_rule() {
+        Rule::branch_option => {
+            let mut inner = parsed.into_inner();
+            let prompt = inner.next().unwrap();
+            let destination = inner.next().unwrap();
+            (
+                prompt.as_str().into(),
+                destination.as_str().parse::<usize>().unwrap(),
+            )
+        }
+        _ => panic!("Called parse_branch_option_line on the wrong rule"),
+    }
+}
+
 /// helper function to parse string_line rule
 fn parse_string_line(parsed: Pair<Rule>) -> String {
     match parsed.as_rule() {
@@ -272,7 +275,7 @@ impl Nodes {
             let stdin = io::stdin();
             let mut stdout = io::stdout();
             match &self.nodes[self.current_node].node_type {
-                Question(qs) => {
+                Question(success, fail, qs) => {
                     // if we haven't run out of prompts
                     if self.internal_state < qs.len() {
                         // TODO Stand-in!
@@ -297,19 +300,17 @@ impl Nodes {
                                     &self.nodes[self.current_node].variable.as_ref().unwrap(),
                                     line,
                                 );
-                                self.state_transition(
-                                    self.nodes[self.current_node].transition_one.unwrap(),
-                                );
+                                let destination = *success;
+                                self.state_transition(destination);
                             }
                         }
                     } else {
                         // Too many blanks!
-                        self.state_transition(
-                            self.nodes[self.current_node].transition_two.unwrap(),
-                        );
+                        let destination = *fail;
+                        self.state_transition(destination);
                     }
                 }
-                Branching(_, one, _) => {
+                Branching(_, options) => {
                     // TODO stand-in!
                     // Display prompt
                     print!("{}", self);
@@ -324,16 +325,23 @@ impl Nodes {
                             eprintln!("TODO - The graphical option won't allow empty input, so just comply please")
                         },
                         _ => {
-                            // NOTE - assumes Branching type always only sets variable on input 1, to that string, this is definitely a stand-in
-                            match line.as_str() {
-                                "1" => {
-                                    self.env.set_variable(&self.nodes[self.current_node].variable.as_ref().unwrap(), (*one).clone());
-                                    self.state_transition(self.nodes[self.current_node].transition_one.unwrap())},
-                                "2" => self.state_transition(self.nodes[self.current_node].transition_two.unwrap()),
-                                _ => eprintln!("There's only 1 and 2")
+                            // Check if its a valid option, if so, return options[choice-1], if not, yell
+                            let choice = line.as_str().parse::<usize>();
+                            match choice {
+                                Ok(n) => {
+                                    if n > options.len() {
+                                        eprintln!("Not a valid option!");
+                                    } else {
+                                        // Set variable to option text
+                                        self.env.set_variable(&self.nodes[self.current_node].variable.as_ref().unwrap(), options[n - 1].0.clone());
+                                        // Transition to destination
+                                        let destination = options[n - 1].1;
+                                        self.state_transition(destination);
+                                    }
+                                }
+                                Err(e) => eprintln!("Unrecognized input: {}", e),
                             }
                         },
-
                     }
                 }
                 Terminating(_) => {
@@ -356,12 +364,10 @@ impl Nodes {
         if_answered: NodeId,
         if_terminate: NodeId,
         variable_name: &str,
-        questions: QuestionList,
+        questions: Vec<String>,
     ) {
         self.nodes.push(Node::new(
-            NodeType::Question(questions),
-            Some(if_answered),
-            Some(if_terminate),
+            NodeType::Question(if_answered, if_terminate, questions),
             Some(variable_name.into()),
         ));
     }
@@ -369,29 +375,20 @@ impl Nodes {
     /// Add a branching node to the set
     fn register_branching_node(
         &mut self,
-        option_one_dest: NodeId,
-        option_two_dest: NodeId,
         variable_name: &str,
         question: &str,
-        option_one: &str,
-        option_two: &str,
+        options: Vec<BranchOption>,
     ) {
         self.nodes.push(Node::new(
-            NodeType::Branching(question.into(), option_one.into(), option_two.into()),
-            Some(option_one_dest),
-            Some(option_two_dest),
+            NodeType::Branching(question.into(), options),
             Some(variable_name.into()),
         ));
     }
 
     /// Add a terminating node to the set
     fn register_terminating_node(&mut self, text: &str) {
-        self.nodes.push(Node::new(
-            NodeType::Terminating(text.into()),
-            None,
-            None,
-            None,
-        ))
+        self.nodes
+            .push(Node::new(NodeType::Terminating(text.into()), None))
     }
 
     /// Catch-all to register a parsed node
@@ -423,19 +420,16 @@ impl Nodes {
             Rule::branching => {
                 // skip type
                 let mut inner = parsed.into_inner().skip(1);
-                // transition1
-                let t1 = parse_int_line(inner.next().unwrap());
-                // transition2
-                let t2 = parse_int_line(inner.next().unwrap());
                 // variable name
                 let var_name = parse_string_line(inner.next().unwrap());
                 // question text
                 let question = parse_string_line(inner.next().unwrap());
-                // option 1 text
-                let o1 = parse_string_line(inner.next().unwrap());
-                // option 2 text
-                let o2 = parse_string_line(inner.next().unwrap());
-                self.register_branching_node(t1, t2, &var_name, &question, &o1, &o2);
+                // options
+                let mut options = Vec::new();
+                for oline in inner {
+                    options.push(parse_branch_option_line(oline));
+                }
+                self.register_branching_node(&var_name, &question, options);
             }
             Rule::terminating => {
                 // skip type
@@ -460,14 +454,19 @@ impl fmt::Display for Nodes {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use NodeType::*;
         match &self.nodes[self.current_node].node_type {
-            Branching(question, one, two) => write!(
-                f,
-                "{}\n1. {}\n2. {}\nEnter choice> ",
-                self.env.resolve_template(question),
-                one,
-                two
-            ),
-            Question(qs) => {
+            Branching(question, options) => {
+                let mut option_string = String::new();
+                for (i, option) in options.iter().enumerate() {
+                    option_string.push_str(&format!("{}. {}\n", i + 1, option.0));
+                }
+                write!(
+                    f,
+                    "{}\n{}\nEnter choice> ",
+                    self.env.resolve_template(question),
+                    option_string
+                )
+            }
+            Question(_, _, qs) => {
                 if self.internal_state > qs.len() {
                     // this situation should have been caught by the caller
                     unreachable!()
@@ -507,21 +506,19 @@ mod test {
         );
         // Node 1
         test.register_branching_node(
-            2,
-            3,
             "QUEST",
             "$NAME, what is your quest?",
-            "The Holy Grail",
-            "Run and Hide",
+            vec![
+                ("The Holy Grail".into(), 2),
+                ("Some Other Grail".into(), 2),
+                ("Run and Hide".into(), 3),
+            ],
         );
         // Node 2
         test.register_branching_node(
-            4,
-            5,
             "COLOR",
             "$NAME, who seeks $QUEST, what is your favorite color?",
-            "Red",
-            "I mean blue",
+            vec![("Red".into(), 4), ("I mean blue".into(), 5)],
         );
         // Node 3
         test.register_terminating_node(
