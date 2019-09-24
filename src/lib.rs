@@ -202,10 +202,15 @@ fn parse_branch_option_line(parsed: Pair<Rule>) -> BranchOption {
         Rule::branch_option => {
             let mut inner = parsed.into_inner();
             let prompt = inner.next().unwrap();
+            // skip delimiter
+            inner.next();
             let destination = inner.next().unwrap();
             (
                 prompt.as_str().into(),
-                destination.as_str().parse::<usize>().expect(&format!("Fail to parse {}", destination.as_str())),
+                destination
+                    .as_str()
+                    .parse::<usize>()
+                    .expect(&format!("Fail to parse {}", destination.as_str())),
             )
         }
         _ => panic!("Called parse_branch_option_line on the wrong rule"),
@@ -228,7 +233,8 @@ fn parse_int_line(parsed: Pair<Rule>) -> usize {
             .next()
             .unwrap()
             .as_str()
-            .parse::<usize>().unwrap(),
+            .parse::<usize>()
+            .unwrap(),
         _ => panic!("Called parse_int_line on the wrong rule"),
     }
 }

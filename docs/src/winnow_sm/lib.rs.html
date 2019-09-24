@@ -533,6 +533,11 @@
 <span id="533">533</span>
 <span id="534">534</span>
 <span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">//</span>
 <span class="comment">// Name of Module: winnow_sm</span>
@@ -561,7 +566,7 @@
 <span class="doccomment">//! Please tell me your name // Second prompt</span>
 <span class="doccomment">//! You better tell me your name // Third prompt</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! The `Branching` type gives the user exactly two options, each with a destination if selected:</span>
+<span class="doccomment">//! The `Branching` type gives the user a series of options, each with a destination if selected:</span>
 <span class="doccomment">//! ```txt</span>
 <span class="doccomment">//! 2 // Node type must be 2</span>
 <span class="doccomment">//! QUEST // Name of the variable associated with this node</span>
@@ -593,11 +598,11 @@
 };
 
 <span class="doccomment">/// Trim either \n or \r\n from a String</span>
-<span class="kw">fn</span> <span class="ident">trim_whitespace</span>(<span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+<span class="kw">fn</span> <span class="ident">trim_whitespace</span>(<span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
 
     <span class="kw">for</span> <span class="ident">c</span> <span class="kw">in</span> <span class="ident">s</span>.<span class="ident">chars</span>() {
-        <span class="kw">if</span> <span class="ident">c</span> <span class="op">!=</span> <span class="string">&#39;\r&#39;</span> <span class="op">&amp;&amp;</span> <span class="ident">c</span> <span class="op">!=</span> <span class="string">&#39;\n&#39;</span> {
+        <span class="kw">if</span> <span class="ident">c</span> <span class="op">!</span><span class="op">=</span> <span class="string">&#39;\r&#39;</span> <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">c</span> <span class="op">!</span><span class="op">=</span> <span class="string">&#39;\n&#39;</span> {
             <span class="ident">ret</span>.<span class="ident">push</span>(<span class="ident">c</span>);
         }
     }
@@ -640,7 +645,7 @@
 
 <span class="kw">impl</span> <span class="ident">Node</span> {
     <span class="doccomment">/// Construct a fresh node</span>
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">node_type</span>: <span class="ident">NodeType</span>, <span class="ident">variable</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">node_type</span>: <span class="ident">NodeType</span>, <span class="ident">variable</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span> {
             <span class="ident">node_type</span>,
             <span class="ident">variable</span>,
@@ -654,10 +659,10 @@
 
 <span class="kw">impl</span> <span class="ident">Env</span> {
     <span class="doccomment">/// Retrieve the value stored at variable_name.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_variable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">variable_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_variable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">variable_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">get</span>(<span class="ident">variable_name</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="ident">v</span>.<span class="ident">into</span>(),
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">variable_name</span>.<span class="ident">into</span>(),
+            <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">v</span>.<span class="ident">into</span>(),
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">variable_name</span>.<span class="ident">into</span>(),
         }
     }
     <span class="doccomment">/// Set variable_name to value, always overwrites</span>
@@ -665,7 +670,7 @@
         <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="self">self</span>
             .<span class="number">0</span>
             .<span class="ident">entry</span>(<span class="ident">variable_name</span>.<span class="ident">into</span>())
-            .<span class="ident">or_insert_with</span>(<span class="op">||</span> <span class="ident">variable_name</span>.<span class="ident">into</span>());
+            .<span class="ident">or_insert_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">variable_name</span>.<span class="ident">into</span>());
         <span class="kw-2">*</span><span class="ident">current</span> <span class="op">=</span> <span class="ident">value</span>;
     }
     <span class="doccomment">/// Resolve a string template</span>
@@ -694,28 +699,28 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="comment">// TODO broken if a variable is at the end of a string, you&#39;re being dumb somewhere</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">resolve_template</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">template</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">resolve_template</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">template</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
         <span class="comment">// Init return string</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
         <span class="comment">// Operate over characters as u8 byte array</span>
         <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">template</span>.<span class="ident">as_bytes</span>().<span class="ident">to_owned</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">vec</span>.<span class="ident">len</span>() {
-            <span class="kw">if</span> <span class="ident">vec</span>[<span class="ident">i</span>] <span class="op">==</span> <span class="string">b&#39;$&#39;</span> {
+            <span class="kw">if</span> <span class="ident">vec</span>[<span class="ident">i</span>] <span class="op">=</span><span class="op">=</span> <span class="string">b&#39;$&#39;</span> {
                 <span class="comment">// we hit a variable</span>
                 <span class="comment">// find the rest of the word</span>
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">var_name</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
                 <span class="comment">// Skip the $</span>
-                <span class="ident">i</span> <span class="op">+=</span> <span class="number">1</span>;
+                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
                 <span class="comment">// Read until encounter a non-capital letter or end of vec</span>
-                <span class="kw">while</span> <span class="ident">vec</span>[<span class="ident">i</span>] <span class="op">&gt;=</span> <span class="string">b&#39;A&#39;</span> <span class="op">&amp;&amp;</span> <span class="ident">vec</span>[<span class="ident">i</span>] <span class="op">&lt;=</span> <span class="string">b&#39;Z&#39;</span> <span class="op">&amp;&amp;</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">vec</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span> {
+                <span class="kw">while</span> <span class="ident">vec</span>[<span class="ident">i</span>] <span class="op">&gt;</span><span class="op">=</span> <span class="string">b&#39;A&#39;</span> <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">vec</span>[<span class="ident">i</span>] <span class="op">&lt;</span><span class="op">=</span> <span class="string">b&#39;Z&#39;</span> <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">vec</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span> {
                     <span class="ident">var_name</span>.<span class="ident">push</span>(<span class="ident">vec</span>[<span class="ident">i</span>] <span class="kw">as</span> <span class="ident">char</span>);
-                    <span class="ident">i</span> <span class="op">+=</span> <span class="number">1</span>;
+                    <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
                 }
                 <span class="ident">ret</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">get_variable</span>(<span class="kw-2">&amp;</span><span class="ident">var_name</span>));
             } <span class="kw">else</span> {
                 <span class="ident">ret</span>.<span class="ident">push</span>(<span class="ident">vec</span>[<span class="ident">i</span>] <span class="kw">as</span> <span class="ident">char</span>);
-                <span class="ident">i</span> <span class="op">+=</span> <span class="number">1</span>;
+                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
             }
         }
         <span class="ident">ret</span>
@@ -723,7 +728,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Env</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span>(<span class="ident">HashMap</span>::<span class="ident">new</span>())
     }
 }
@@ -733,40 +738,45 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NodesParser</span>;
 
 <span class="doccomment">/// helper function to parse branch_option rule</span>
-<span class="kw">fn</span> <span class="ident">parse_branch_option_line</span>(<span class="ident">parsed</span>: <span class="ident">Pair</span><span class="op">&lt;</span><span class="ident">Rule</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">BranchOption</span> {
+<span class="kw">fn</span> <span class="ident">parse_branch_option_line</span>(<span class="ident">parsed</span>: <span class="ident">Pair</span><span class="op">&lt;</span><span class="ident">Rule</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">BranchOption</span> {
     <span class="kw">match</span> <span class="ident">parsed</span>.<span class="ident">as_rule</span>() {
-        <span class="ident">Rule</span>::<span class="ident">branch_option</span> <span class="op">=&gt;</span> {
+        <span class="ident">Rule</span>::<span class="ident">branch_option</span> <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">parsed</span>.<span class="ident">into_inner</span>();
             <span class="kw">let</span> <span class="ident">prompt</span> <span class="op">=</span> <span class="ident">inner</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>();
+            <span class="comment">// skip delimiter</span>
+            <span class="ident">inner</span>.<span class="ident">next</span>();
             <span class="kw">let</span> <span class="ident">destination</span> <span class="op">=</span> <span class="ident">inner</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>();
             (
                 <span class="ident">prompt</span>.<span class="ident">as_str</span>().<span class="ident">into</span>(),
-                <span class="ident">destination</span>.<span class="ident">as_str</span>().<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>(),
+                <span class="ident">destination</span>
+                    .<span class="ident">as_str</span>()
+                    .<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>()
+                    .<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Fail to parse {}&quot;</span>, <span class="ident">destination</span>.<span class="ident">as_str</span>())),
             )
         }
-        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Called parse_branch_option_line on the wrong rule&quot;</span>),
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Called parse_branch_option_line on the wrong rule&quot;</span>),
     }
 }
 
 <span class="doccomment">/// helper function to parse string_line rule</span>
-<span class="kw">fn</span> <span class="ident">parse_string_line</span>(<span class="ident">parsed</span>: <span class="ident">Pair</span><span class="op">&lt;</span><span class="ident">Rule</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+<span class="kw">fn</span> <span class="ident">parse_string_line</span>(<span class="ident">parsed</span>: <span class="ident">Pair</span><span class="op">&lt;</span><span class="ident">Rule</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
     <span class="kw">match</span> <span class="ident">parsed</span>.<span class="ident">as_rule</span>() {
-        <span class="ident">Rule</span>::<span class="ident">string_line</span> <span class="op">=&gt;</span> <span class="ident">trim_whitespace</span>(<span class="ident">parsed</span>.<span class="ident">as_str</span>()),
-        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Called parse_string_line on the wrong rule&quot;</span>),
+        <span class="ident">Rule</span>::<span class="ident">string_line</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">trim_whitespace</span>(<span class="ident">parsed</span>.<span class="ident">as_str</span>()),
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Called parse_string_line on the wrong rule&quot;</span>),
     }
 }
 
 <span class="doccomment">/// helper function to parse int_line rule</span>
-<span class="kw">fn</span> <span class="ident">parse_int_line</span>(<span class="ident">parsed</span>: <span class="ident">Pair</span><span class="op">&lt;</span><span class="ident">Rule</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+<span class="kw">fn</span> <span class="ident">parse_int_line</span>(<span class="ident">parsed</span>: <span class="ident">Pair</span><span class="op">&lt;</span><span class="ident">Rule</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
     <span class="kw">match</span> <span class="ident">parsed</span>.<span class="ident">as_rule</span>() {
-        <span class="ident">Rule</span>::<span class="ident">int_line</span> <span class="op">=&gt;</span> <span class="ident">parsed</span>
+        <span class="ident">Rule</span>::<span class="ident">int_line</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">parsed</span>
             .<span class="ident">into_inner</span>()
             .<span class="ident">next</span>()
             .<span class="ident">unwrap</span>()
             .<span class="ident">as_str</span>()
             .<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>()
             .<span class="ident">unwrap</span>(),
-        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Called parse_int_line on the wrong rule&quot;</span>),
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Called parse_int_line on the wrong rule&quot;</span>),
     }
 }
 
@@ -786,8 +796,8 @@
 
 <span class="kw">impl</span> <span class="ident">Nodes</span> {
     <span class="doccomment">/// Constructor will parse specified file or `input.txt` if None</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">specified_input</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">input_file</span> <span class="op">=</span> <span class="ident">specified_input</span>.<span class="ident">unwrap_or_else</span>(<span class="op">||</span> <span class="ident">DEFAULT_INPUT_FILE</span>.<span class="ident">into</span>());
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">specified_input</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">input_file</span> <span class="op">=</span> <span class="ident">specified_input</span>.<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DEFAULT_INPUT_FILE</span>.<span class="ident">into</span>());
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Input file: {}\n&quot;</span>, <span class="ident">input_file</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">Nodes</span>::<span class="ident">default</span>();
         <span class="comment">// read input file</span>
@@ -797,8 +807,8 @@
         <span class="ident">bfr</span>.<span class="ident">read_to_string</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">file_str</span>)
             .<span class="ident">expect</span>(<span class="string">&quot;Should read input file&quot;</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parsed</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">NodesParser</span>::<span class="ident">parse</span>(<span class="ident">Rule</span>::<span class="ident">nodes</span>, <span class="kw-2">&amp;</span><span class="ident">file_str</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">parse_tree</span>) <span class="op">=&gt;</span> <span class="ident">parse_tree</span>,
-            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">e</span>)),
+            <span class="prelude-val">Ok</span>(<span class="ident">parse_tree</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">parse_tree</span>,
+            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">e</span>)),
         };
         <span class="ident">ret</span>.<span class="ident">read_and_register</span>(<span class="ident">parsed</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>());
         <span class="ident">ret</span>
@@ -806,12 +816,12 @@
 
     <span class="doccomment">/// Execute machine</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
-        <span class="kw">while</span> <span class="self">self</span>.<span class="ident">current_node</span> <span class="op">!=</span> <span class="ident">TERMINATING_NODE</span> {
+        <span class="kw">while</span> <span class="self">self</span>.<span class="ident">current_node</span> <span class="op">!</span><span class="op">=</span> <span class="ident">TERMINATING_NODE</span> {
             <span class="kw">use</span> <span class="ident">NodeType</span>::<span class="kw-2">*</span>;
             <span class="kw">let</span> <span class="ident">stdin</span> <span class="op">=</span> <span class="ident">io</span>::<span class="ident">stdin</span>();
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">io</span>::<span class="ident">stdout</span>();
             <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">nodes</span>[<span class="self">self</span>.<span class="ident">current_node</span>].<span class="ident">node_type</span> {
-                <span class="ident">Question</span>(<span class="ident">success</span>, <span class="ident">fail</span>, <span class="ident">qs</span>) <span class="op">=&gt;</span> {
+                <span class="ident">Question</span>(<span class="ident">success</span>, <span class="ident">fail</span>, <span class="ident">qs</span>) <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="comment">// if we haven&#39;t run out of prompts</span>
                     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">internal_state</span> <span class="op">&lt;</span> <span class="ident">qs</span>.<span class="ident">len</span>() {
                         <span class="comment">// TODO Stand-in!</span>
@@ -824,11 +834,11 @@
                         <span class="comment">// Truncate newline</span>
                         <span class="ident">line</span> <span class="op">=</span> <span class="ident">trim_whitespace</span>(<span class="kw-2">&amp;</span><span class="ident">line</span>);
                         <span class="kw">match</span> <span class="ident">line</span>.<span class="ident">len</span>() {
-                            <span class="number">0</span> <span class="op">=&gt;</span> {
+                            <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> {
                                 <span class="comment">// Empty input - just a newline</span>
-                                <span class="self">self</span>.<span class="ident">internal_state</span> <span class="op">+=</span> <span class="number">1</span>;
+                                <span class="self">self</span>.<span class="ident">internal_state</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
                             }
-                            <span class="kw">_</span> <span class="op">=&gt;</span> {
+                            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
                                 <span class="comment">// Store anything else</span>
                                 <span class="comment">// Unwraps are safe - we already know its a Question</span>
                                 <span class="comment">// Set value</span>
@@ -846,7 +856,7 @@
                         <span class="self">self</span>.<span class="ident">state_transition</span>(<span class="ident">destination</span>);
                     }
                 }
-                <span class="ident">Branching</span>(<span class="kw">_</span>, <span class="ident">options</span>) <span class="op">=&gt;</span> {
+                <span class="ident">Branching</span>(<span class="kw">_</span>, <span class="ident">options</span>) <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="comment">// TODO stand-in!</span>
                     <span class="comment">// Display prompt</span>
                     <span class="macro">print</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="self">self</span>);
@@ -857,14 +867,14 @@
                     <span class="comment">// truncate newline</span>
                     <span class="ident">line</span> <span class="op">=</span> <span class="ident">trim_whitespace</span>(<span class="kw-2">&amp;</span><span class="ident">line</span>);
                     <span class="kw">match</span> <span class="ident">line</span>.<span class="ident">len</span>() {
-                        <span class="number">0</span> <span class="op">=&gt;</span> {
+                        <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> {
                             <span class="macro">eprintln</span><span class="macro">!</span>(<span class="string">&quot;TODO - The graphical option won&#39;t allow empty input, so just comply please&quot;</span>)
                         },
-                        <span class="kw">_</span> <span class="op">=&gt;</span> {
+                        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
                             <span class="comment">// Check if its a valid option, if so, return options[choice-1], if not, yell</span>
                             <span class="kw">let</span> <span class="ident">choice</span> <span class="op">=</span> <span class="ident">line</span>.<span class="ident">as_str</span>().<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>();
                             <span class="kw">match</span> <span class="ident">choice</span> {
-                                <span class="prelude-val">Ok</span>(<span class="ident">n</span>) <span class="op">=&gt;</span> {
+                                <span class="prelude-val">Ok</span>(<span class="ident">n</span>) <span class="op">=</span><span class="op">&gt;</span> {
                                     <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="ident">options</span>.<span class="ident">len</span>() {
                                         <span class="macro">eprintln</span><span class="macro">!</span>(<span class="string">&quot;Not a valid option!&quot;</span>);
                                     } <span class="kw">else</span> {
@@ -875,12 +885,12 @@
                                         <span class="self">self</span>.<span class="ident">state_transition</span>(<span class="ident">destination</span>);
                                     }
                                 }
-                                <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">eprintln</span><span class="macro">!</span>(<span class="string">&quot;Unrecognized input: {}&quot;</span>, <span class="ident">e</span>),
+                                <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">eprintln</span><span class="macro">!</span>(<span class="string">&quot;Unrecognized input: {}&quot;</span>, <span class="ident">e</span>),
                             }
                         },
                     }
                 }
-                <span class="ident">Terminating</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
+                <span class="ident">Terminating</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="comment">// TODO stand-in!</span>
                     <span class="comment">// Display</span>
                     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="self">self</span>);
@@ -930,14 +940,14 @@
     <span class="doccomment">/// Catch-all to register a parsed node</span>
     <span class="kw">fn</span> <span class="ident">read_and_register</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">parsed</span>: <span class="ident">Pair</span><span class="op">&lt;</span><span class="ident">Rule</span><span class="op">&gt;</span>) {
         <span class="kw">match</span> <span class="ident">parsed</span>.<span class="ident">as_rule</span>() {
-            <span class="ident">Rule</span>::<span class="ident">nodes</span> <span class="op">=&gt;</span> {
+            <span class="ident">Rule</span>::<span class="ident">nodes</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">for</span> <span class="ident">child</span> <span class="kw">in</span> <span class="ident">parsed</span>.<span class="ident">into_inner</span>() {
                     <span class="comment">// each should be an expr, grab the actual node type and register it</span>
                     <span class="self">self</span>.<span class="ident">read_and_register</span>(<span class="ident">child</span>);
                 }
             }
-            <span class="ident">Rule</span>::<span class="ident">node</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">read_and_register</span>(<span class="ident">parsed</span>.<span class="ident">into_inner</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>()),
-            <span class="ident">Rule</span>::<span class="ident">question</span> <span class="op">=&gt;</span> {
+            <span class="ident">Rule</span>::<span class="ident">node</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">read_and_register</span>(<span class="ident">parsed</span>.<span class="ident">into_inner</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>()),
+            <span class="ident">Rule</span>::<span class="ident">question</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="comment">// skip type</span>
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">parsed</span>.<span class="ident">into_inner</span>().<span class="ident">skip</span>(<span class="number">1</span>);
                 <span class="comment">// transition1</span>
@@ -953,7 +963,7 @@
                 }
                 <span class="self">self</span>.<span class="ident">register_question_node</span>(<span class="ident">t1</span>, <span class="ident">t2</span>, <span class="kw-2">&amp;</span><span class="ident">var_name</span>, <span class="ident">questions</span>);
             }
-            <span class="ident">Rule</span>::<span class="ident">branching</span> <span class="op">=&gt;</span> {
+            <span class="ident">Rule</span>::<span class="ident">branching</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="comment">// skip type</span>
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">parsed</span>.<span class="ident">into_inner</span>().<span class="ident">skip</span>(<span class="number">1</span>);
                 <span class="comment">// variable name</span>
@@ -967,15 +977,15 @@
                 }
                 <span class="self">self</span>.<span class="ident">register_branching_node</span>(<span class="kw-2">&amp;</span><span class="ident">var_name</span>, <span class="kw-2">&amp;</span><span class="ident">question</span>, <span class="ident">options</span>);
             }
-            <span class="ident">Rule</span>::<span class="ident">terminating</span> <span class="op">=&gt;</span> {
+            <span class="ident">Rule</span>::<span class="ident">terminating</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="comment">// skip type</span>
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">parsed</span>.<span class="ident">into_inner</span>().<span class="ident">skip</span>(<span class="number">1</span>);
                 <span class="comment">// Terminate message</span>
                 <span class="kw">let</span> <span class="ident">message</span> <span class="op">=</span> <span class="ident">parse_string_line</span>(<span class="ident">inner</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>());
                 <span class="self">self</span>.<span class="ident">register_terminating_node</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>);
             }
-            <span class="ident">Rule</span>::<span class="ident">EOI</span> <span class="op">=&gt;</span> {}
-            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Cannot handle {:?}&quot;</span>, <span class="ident">parsed</span>.<span class="ident">as_rule</span>())),
+            <span class="ident">Rule</span>::<span class="ident">EOI</span> <span class="op">=</span><span class="op">&gt;</span> {}
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Cannot handle {:?}&quot;</span>, <span class="ident">parsed</span>.<span class="ident">as_rule</span>())),
         }
     }
 
@@ -987,10 +997,10 @@
 }
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">Nodes</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="kw">use</span> <span class="ident">NodeType</span>::<span class="kw-2">*</span>;
         <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">nodes</span>[<span class="self">self</span>.<span class="ident">current_node</span>].<span class="ident">node_type</span> {
-            <span class="ident">Branching</span>(<span class="ident">question</span>, <span class="ident">options</span>) <span class="op">=&gt;</span> {
+            <span class="ident">Branching</span>(<span class="ident">question</span>, <span class="ident">options</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">option_string</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
                 <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">option</span>) <span class="kw">in</span> <span class="ident">options</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
                     <span class="ident">option_string</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}. {}\n&quot;</span>, <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">option</span>.<span class="number">0</span>));
@@ -1002,7 +1012,7 @@
                     <span class="ident">option_string</span>
                 )
             }
-            <span class="ident">Question</span>(<span class="kw">_</span>, <span class="kw">_</span>, <span class="ident">qs</span>) <span class="op">=&gt;</span> {
+            <span class="ident">Question</span>(<span class="kw">_</span>, <span class="kw">_</span>, <span class="ident">qs</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">internal_state</span> <span class="op">&gt;</span> <span class="ident">qs</span>.<span class="ident">len</span>() {
                     <span class="comment">// this situation should have been caught by the caller</span>
                     <span class="macro">unreachable</span><span class="macro">!</span>()
@@ -1013,7 +1023,7 @@
                     <span class="self">self</span>.<span class="ident">env</span>.<span class="ident">resolve_template</span>(<span class="kw-2">&amp;</span><span class="ident">qs</span>[<span class="self">self</span>.<span class="ident">internal_state</span>])
                 )
             }
-            <span class="ident">Terminating</span>(<span class="ident">message</span>) <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(
+            <span class="ident">Terminating</span>(<span class="ident">message</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(
                 <span class="ident">f</span>,
                 <span class="string">&quot;{}\nGoodbye (enter anything to exit)&gt; &quot;</span>,
                 <span class="self">self</span>.<span class="ident">env</span>.<span class="ident">resolve_template</span>(<span class="ident">message</span>)

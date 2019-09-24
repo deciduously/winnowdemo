@@ -8,7 +8,7 @@ int_line = { int ~ newline }
 
 string_line = { string ~ newline }
     delim = { ":" }
-    punctuation = {!delim ~ PUNCTUATION }
+    punctuation = { !delim ~ PUNCTUATION }
     string = @{ (LETTER|NUMBER|punctuation|SYMBOL|" ")+ }
 
 branching = { branching_id ~ string_line{2} ~ branch_option+ }

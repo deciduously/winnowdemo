@@ -6,5 +6,4 @@ implementors["winnow_sm"] = [{text:"impl Freeze for <a class=\"struct\" href=\"w
             } else {
                 window.pending_implementors = implementors;
             }
-        
-})()
+        })()
