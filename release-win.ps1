@@ -1,4 +1,4 @@
-$version = '1.3.0'
+$version = '1.4.0'
 $exec = 'winnowdemo'
 $pkg = $exec + '_' + $version + '_win64'
 

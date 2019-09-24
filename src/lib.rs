@@ -25,7 +25,7 @@
 //! Please tell me your name // Second prompt
 //! You better tell me your name // Third prompt
 //! ```
-//! The `Branching` type gives the user exactly two options, each with a destination if selected:
+//! The `Branching` type gives the user a series of options, each with a destination if selected:
 //! ```txt
 //! 2 // Node type must be 2
 //! QUEST // Name of the variable associated with this node
@@ -205,7 +205,7 @@ fn parse_branch_option_line(parsed: Pair<Rule>) -> BranchOption {
             let destination = inner.next().unwrap();
             (
                 prompt.as_str().into(),
-                destination.as_str().parse::<usize>().unwrap(),
+                destination.as_str().parse::<usize>().expect(&format!("Fail to parse {}", destination.as_str())),
             )
         }
         _ => panic!("Called parse_branch_option_line on the wrong rule"),
@@ -228,8 +228,7 @@ fn parse_int_line(parsed: Pair<Rule>) -> usize {
             .next()
             .unwrap()
             .as_str()
-            .parse::<usize>()
-            .unwrap(),
+            .parse::<usize>().unwrap(),
         _ => panic!("Called parse_int_line on the wrong rule"),
     }
 }

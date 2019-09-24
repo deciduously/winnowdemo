@@ -1,17 +1,19 @@
+COMMENT = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
+
 int = @{ digit+ }
     digit = { '0'..'9' }
 
 int_line = { int ~ newline }
     newline = { ("\n" | "\r\n") }
 
-string_line = { (letter|punctuation) ~ string ~ newline }
-    letter = { 'a' .. 'z' | 'A' .. 'Z' }
-    punctuation = { " " | "?" | "." | "," | "$" | "-" }
-    string = @{ (letter | digit | punctuation )+ }
+string_line = { string ~ newline }
+    delim = { ":" }
+    punctuation = {!delim ~ PUNCTUATION }
+    string = @{ (LETTER|NUMBER|punctuation|SYMBOL|" ")+ }
 
 branching = { branching_id ~ string_line{2} ~ branch_option+ }
     branching_id = { "2" ~ newline }
-    branch_option = { string ~ ":" ~ int ~ newline }
+    branch_option = { string ~ delim ~ int ~ newline }
     
 question = { question_id ~ int_line{2} ~ string_line ~ string_line+ }
     question_id = { "1" ~ newline }
@@ -19,6 +21,6 @@ question = { question_id ~ int_line{2} ~ string_line ~ string_line+ }
 terminating = { terminating_id ~ string_line }
     terminating_id = { "3" ~ newline }
 
-node = { question | branching | terminating }
+node = { NEWLINE? ~ (question | branching | terminating) ~ NEWLINE? }
 
 nodes = { SOI ~ node* ~ EOI }

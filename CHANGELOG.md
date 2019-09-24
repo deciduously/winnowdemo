@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v1.4.0
+
+- Support a larger range of non-alphanumeric characters in strings
+- Allow comments for input file
+
 ## v1.3.0
 
 - Allow variable-sized type 2 Branching nodes

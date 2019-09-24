@@ -1,6 +1,6 @@
 .PHONY: all clean deploy docs help
 
-VERSION=1.3.0
+VERSION=1.4.0
 
 BUILDDR = build
 PROJECT=$(notdir $(shell pwd))
