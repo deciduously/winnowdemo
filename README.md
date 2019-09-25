@@ -4,10 +4,15 @@
 
 ## Usage
 
-To run the Holy Grail demo, double-click the "winnowdemo" executable file.  To run the AdReadiness demo, double-click the "RunAdReadiness" batch file.  If you'd like to run a different input, navigate to this directory in a terminal and specify which at the command line:
+Download the appropriate [release bundle](https://github.com/deciduously/winnowdemo/releases/tag/v1.4.1).  There are two demos bundled:
+
+* Holy Grail demo: double-click the "winnowdemo" executable file.
+* AdReadiness demo: double-click the "RunAdReadiness" batch file.
+
+If you'd like to run a different input, navigate to this directory in a terminal and specify which at the command line:
 
 ```
-> .\winnowdemo AdReadiness.txt
+C:\Users\me\winnowdemo> .\winnowdemo AdReadiness.txt
 ```
 
 ## Dependencies
@@ -18,7 +23,7 @@ Then, obtain [rustup](https://rustup.rs/).  This is the official toolchain manag
 
 ## Build
 
-ither clone the [GitHub repository](https://github.com/deciduously/winnowdemo) or download the source code from the [Release page](https://github.com/deciduously/winnowdemo).  Execute the following commands to build the code:
+Clone the [GitHub repository](https://github.com/deciduously/winnowdemo) or download the source code from the [Release page](https://github.com/deciduously/winnowdemo/releases/tag/v1.4.1).  Execute the following commands to build the code:
 
 ```
 C:\Users\me\> cd winnowdemo
