@@ -1,0 +1,125 @@
+/* Node 0 */
+2
+N0
+Welcome to Winnow.  In order to get started we need to ask you a few question and have you do a few things
+Get Started:1
+Not Sure:2
+/* Node 1 */
+1
+3
+8
+NAME
+What is your name?
+Just type in your name and press ENTER
+Try entering you name please.
+/* Node 2 */
+2
+N2
+This is where our process starts.  Your information is safe with us.
+Okay, Start:1
+Not comfortable:8
+/* Node 3 */
+2
+N3
+$NAME, we need for you to open access to these four platforms.  Please select one.
+Google Ad ID:4
+FaceBook ID:10
+Google Tags:14
+Add Facebook Pixel:18
+/* Node 4 */
+2
+N4
+$NAME, we recommend that you share your Google Ad Customer ID number.
+Show Me:5
+/* Node 5 */
+2
+N5
+Here is how you do that - https//support.google.com/google-ads/answer/1704344
+Did It:7
+Not Comfortable:6
+/* Node 6 */
+2
+N6
+If you do not share your Google Ads account Id, we will be unable to review your past performance and run new ads for you.
+Okay, Show Me:5
+Still Not Comfortable:8
+/* Node 7 */
+2
+N7
+Terrific. You have shared your Google Ads account with us.  Now, select the other options from the menu.
+Okay:3
+/* Node 8 */
+2
+N8
+I hear that you are not comfortable with proceeding.  What would you like to do?
+Have Customer Service Contact You?:9
+Okay, Let Me Try:0
+/* Node 9 */
+3
+Customer Service will be in touch.
+/* Node 10 */
+2
+N10
+$NAME, We recommend you share your Facebook Ad Account ID.
+Show Me:11
+/* Node 11 */
+2
+N11
+Here is how you share your Facebook ID with us. - https//www.facebook.com/business/help/1492627900875762
+Did It:13
+Not Comfortable:12
+/* Node 12 */
+2
+N12
+If you do not share your Facebook Ads account Id, we will be unable to review your past performance and run new ads for you
+Okay, Show Me:11
+Still Not Comfortable:8
+/* Node 13 */
+2
+N13
+Terrific. You have shared your Facebook ID with us.  Now, select the other options from the menu.
+Okay:3
+/* Node 14 */
+2
+N14
+$NAME, we recommend that you get a Google Tag Manager account and place the container on your website.
+Show Me:15
+/* Node 15 */
+2
+N15
+Here is how you get a Google Tag Manager account - https//support.google.com/tagmanager/answer/6103696?hl=en
+Did It:17
+Not Comfortable:16
+/* Node 16 */
+2
+N16
+Google Tag Manager helps you add multuiple tracking and other tags to your website without having change the code multiple times. It also keeps your website code clean.
+Okay, Show Me:15
+Still Not Comfortable:8
+/* Node 17 */
+2
+N17
+Terrific, Google Tag Manager is setup.  Now, select the other options from the menu.
+Okay:3
+/* Node 18 */
+2
+N18
+$NAME, we recommend that you install Facebook Pixel tracking on your website.
+Show Me:19
+/* Node 19 */
+2
+N19
+Here is how you install Facebook Pixel tracking - https//www.facebook.com/business/help/952192354843755
+Did It:21
+Not Comfortable:20
+/* Node 20 */
+2
+N20
+Adding a FB pixel to your page lets us track the metrics of your conversion campaigns. Without this access we are unable to track all the relevant metrics needed to understand the efficacy of the campaign
+Okay, Show Me:19
+Still Not Comfortable:8
+/* Node 21 */
+2
+N21
+Terrific.  A Facebook pixel has been added to your page.  Now, select the other options from the menu.
+Okay:3

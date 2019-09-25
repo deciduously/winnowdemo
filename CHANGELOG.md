@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.4.1
+
+- Complete Windows bundle for presentation
+
 ## v1.4.0
 
 - Support a larger range of non-alphanumeric characters in strings

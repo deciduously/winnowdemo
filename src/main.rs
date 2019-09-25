@@ -4,7 +4,7 @@
 // Author: Ben Lovy
 // Date: 9/22/2019
 // For: SIMC
-// Copyright SIMC or Ben Lovy  - All Rights Reserved.
+// Copyright SIMC - All Rights Reserved.
 //
 
 use winnow_sm::Nodes;
