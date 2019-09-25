@@ -11,7 +11,6 @@ You better tell me your name
 QUEST
 $NAME, what is your quest?
 The Holy Grail:2
-Some Other Grail:2
 Run and Hide:3
 /* Node 2 */
 2
@@ -21,7 +20,7 @@ Red:4
 I mean blue:5
 /* Node 3 */
 3
-Since you have REFUSED to answer, customer service has been called
+Since you have REFUSED to answer, The Black Night has been called
 /* Node 4 */
 3
 You may pass, $NAME who loves $COLOR, on your noble quest for the $QUEST.

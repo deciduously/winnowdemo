@@ -1,3 +1,11 @@
+//
+// Name of Module: nodes.pest
+// Author: Ben Lovy
+// Date: 9/22/2019
+// For: SIMC
+// Copyright SIMC - All Rights Reserved.
+//
+
 COMMENT = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
 
 int = @{ digit+ }

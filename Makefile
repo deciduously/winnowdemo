@@ -1,14 +1,10 @@
 .PHONY: all clean deploy docs help
 
-VERSION=1.4.0
+VERSION=1.4.1
 
-BUILDDR = build
 PROJECT=$(notdir $(shell pwd))
 BUILDTARGET=$(PROJECT)/$(BUILDDIR)
-DEPLOYDIR=deploy
 EXEC=$(BUILDTARGET)$(PROJECT)
-LIB=winnow_sm
-INPUTFILE=./input.txt
 RUSTCLEAN=cargo clean
 RUSTDOC=cargo doc --document-private-items --no-deps
 RUST=cargo build --release
@@ -18,6 +14,7 @@ XZTARGET=$(PKGDIR).tar.xz
 all: $(EXEC)
 
 clean:
+	rm -rf $(PROJECT)_*
 	$(RUSTCLEAN)
 
 docs: all
@@ -28,11 +25,11 @@ docs: all
 $(EXEC):
 	$(RUST)
 
-deploy: docs
-	rm -rf $(PROJECT)_*
-	mkdir -p $(PKGDIR)
+deploy: clean all $(TESTFILES)
+	mkdir  -p $(PKGDIR)
+	cp *.txt $(PKGDIR)
+	cp *.md $(PKGDIR)
 	cp ./target/release/$(PROJECT) $(PKGDIR)
-	cp $(INPUTFILE) $(PKGDIR)
 	tar -cf - $(PKGDIR) | xz -9 - > $(XZTARGET)
 
 help:

@@ -4,7 +4,7 @@
 // Author: Ben Lovy
 // Date: 9/22/2019
 // For: SIMC
-// Copyright SIMC or Ben Lovy  - All Rights Reserved.
+// Copyright SIMC - All Rights Reserved.
 //
 
 //! # winnow_sm
@@ -513,11 +513,7 @@ mod test {
         test.register_branching_node(
             "QUEST",
             "$NAME, what is your quest?",
-            vec![
-                ("The Holy Grail".into(), 2),
-                ("Some Other Grail".into(), 2),
-                ("Run and Hide".into(), 3),
-            ],
+            vec![("The Holy Grail".into(), 2), ("Run and Hide".into(), 3)],
         );
         // Node 2
         test.register_branching_node(
@@ -527,7 +523,7 @@ mod test {
         );
         // Node 3
         test.register_terminating_node(
-            "Since you have REFUSED to answer, customer service has been called",
+            "Since you have REFUSED to answer, The Black Night has been called",
         );
         // Node 4
         test.register_terminating_node(
