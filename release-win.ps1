@@ -16,4 +16,4 @@ Copy-Item AdReadiness.txt -Destination "$pkg"
 # Copy AdReadiness launcher
 Copy-Item RunAdReadiness.bat -Destination "$pkg"
 # Compress
-Compress-Archive -Path "$pkg" -DestinationPath "$pkg.zip"
+Compress-Archive -Force -Path "$pkg" -DestinationPath "$pkg.zip"
