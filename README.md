@@ -1,4 +1,4 @@
-# Winnow state machine demo
+# Winnow Automation Demo
 
 [API Documentation](https://deciduously.github.io/winnowdemo/winnow_sm/index.html)
 
